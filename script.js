@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         typingIndicator.classList.remove('hidden');
         chatLog.scrollTop = chatLog.scrollHeight;
 
-        const apiKey = "AIzaSyAICgNvyUUe4ikL5GG3P_2D9LFvY7m0oSg"; // API key will be automatically provided in the environment.
+        const apiKey = ""; // API key will be automatically provided in the environment.
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
         
         // This is a detailed instruction for the AI on how to behave.
@@ -257,5 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
 
 
