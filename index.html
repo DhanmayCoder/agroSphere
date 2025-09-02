@@ -442,6 +442,38 @@
             </div>
         </div>
     </footer>
+
+    <!-- The core Firebase JS SDK must be always first -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<!-- Add Firebase products that you want to use -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyDOwo9T6L87tM2ibKcomrr9a8E_bmLaZw8",
+    authDomain: "agrosphere-7fc91.firebaseapp.com",
+    projectId: "agrosphere-7fc91",
+    storageBucket: "agrosphere-7fc91.firebasestorage.app",
+    messagingSenderId: "55764982725",
+    appId: "1:55764982725:web:6cc28eceb978882c0dc9ac",
+    measurementId: "G-MHLHVZ22HH"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+
     
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
@@ -450,5 +482,6 @@
 </body>
 
 </html>
+
 
 
