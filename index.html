@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSphere - Smart Farming, Sustainable Future</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (for base styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#22c55e',
+                        'primary-dark': '#16a34a',
+                        'secondary': '#f97316',
+                        'dark-bg': '#0f172a',
+                        'light-bg': '#f1f5f9',
+                        'text-dark': '#0f172a',
+                        'extra': '#2e462f',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<div id="chatbot-container">
+    <!-- Chat Bubble -->
+    <div id="chat-bubble" class="shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+    </div>
+
+    <!-- Chat Window -->
+    <div id="chat-window" class="shadow-2xl">
+        <!-- Header -->
+        <div id="chat-header">
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 bg-dark-bg rounded-full flex items-center justify-center">
+                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#16a34a"/>
+                        <path d="M12 6C9.17 6 6.84 7.63 5.5 10.04C6.87 8.5 8.83 7.5 11 7.5V10.5L14.5 7L11 3.5V6.5C10.5 6.5 10 6.5 9.5 6.5C8.81 6.5 8.16 6.62 7.55 6.81C8.83 5.67 10.41 5 12 5C13.59 5 15.17 5.67 16.45 6.81C17.16 6.62 17.81 6.5 18.5 6.5C19 6.5 19.5 6.5 20 6.5V3.5L16.5 7L20 10.5V7.5C18.17 7.5 16.13 8.5 14.5 10.04C13.16 7.63 10.83 6 12 6Z" fill="#22c55e"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-lg">AgroSphere AI Assistant</h3>
+                    <p class="text-sm text-green-200">Online</p>
+                </div>
+            </div>
+            <button id="close-chat" class="text-slate-300 hover:text-white">&times;</button>
+        </div>
+        
+        <!-- Message Area -->
+        <div id="chat-log">
+            <!-- Messages will be added here by JavaScript -->
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="hidden">
+            <div class="message bot-message">
+                <div class="typing-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Input Area -->
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Ask about crops, soil, or farming..." autocomplete="off">
+            <button type="submit" id="send-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </form>
+    </div>
+</div>
+<body class="bg-light-bg font-poppins">
+
+    <!-- =========== Sidebar Functionality =========== -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <aside id="sidebar" class="sidebar">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <a href="index.html" class="flex items-center space-x-2 text-white transition-transform hover:scale-105">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#16a34a"/>
+                    <path d="M12 6C9.17 6 6.84 7.63 5.5 10.04C6.87 8.5 8.83 7.5 11 7.5V10.5L14.5 7L11 3.5V6.5C10.5 6.5 10 6.5 9.5 6.5C8.81 6.5 8.16 6.62 7.55 6.81C8.83 5.67 10.41 5 12 5C13.59 5 15.17 5.67 16.45 6.81C17.16 6.62 17.81 6.5 18.5 6.5C19 6.5 19.5 6.5 20 6.5V3.5L16.5 7L20 10.5V7.5C18.17 7.5 16.13 8.5 14.5 10.04C13.16 7.63 10.83 6 12 6Z" fill="#22c55e"/>
+                </svg>
+                <span class="text-2xl font-bold" >AgroSphere</span>
+            </a>
+            <button id="sidebar-close-btn" class="sidebar-close-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar-nav">
+            <span class="nav-section-title">Tools</span>
+            <a href="leaftest.html" class="sidebar-link active">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M12 20h.01"></path><path d="M11 6.162A6.5 6.5 0 0 0 4.34 11.026"></path><path d="M12.593 4.593a6.5 6.5 0 0 0-8.25 6.433"></path><path d="M12 3a1 1 0 0 0-1 1v2a1 1 0 0 0 2 0V4a1 1 0 0 0-1-1z"></path><path d="M21.932 14.594a6.5 6.5 0 0 0-11.339-3.57"></path><path d="M16.94 19.34a6.5 6.5 0 0 0-6.433-8.25"></path><path d="M21 12a1 1 0 0 0-1-1h-2a1 1 0 0 0 0 2h2a1 1 0 0 0 1-1z"></path></svg>
+                <span>LeafLens Detection</span>
+            </a>
+            <a href="wether.html" class="sidebar-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+                <span>Weather Forecast</span>
+            </a>
+            
+
+
+
+            <div class="sidebar-dropdown">
+    <a href="#" class="sidebar-link sidebar-dropdown-toggle group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span>Market Prices</span>
+        <!-- Arrow Icon -->
+        <svg class="dropdown-arrow ml-auto h-5 w-5 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+    </a>
+    <!-- Submenu -->
+    <div class="sidebar-submenu">
+        <a href="market.html" class="sidebar-submenu-link">Banana Prices</a>
+        <a href="muskmelon-market.html" class="sidebar-submenu-link">Muskmelon Prices</a>
+    </div>
+</div>
+
+<div class="sidebar-dropdown">
+    <a href="#" class="sidebar-link sidebar-dropdown-toggle group">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+            <path d="M2 9.27l10 2.5 10-2.5"></path>
+            <path d="M12 17.77V22"></path>
+        </svg>
+        <span>crops</span>
+        <!-- Arrow Icon -->
+        <svg class="dropdown-arrow ml-auto h-5 w-5 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
+    </a>
+    <!-- Submenu -->
+    <div class="sidebar-submenu">
+        <a href="C:\Users\jaini\Desktop\javascript\crop\banana_details.html" class="sidebar-submenu-link">Banana</a>
+        <a href="C:\Users\jaini\Desktop\javascript\crop\muskmelon_details.html" class="sidebar-submenu-link">Muskmelon</a>
+    </div>
+</div>
+
+            <span class="nav-section-title">Account</span>
+            <a href="#" class="sidebar-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>My Profile</span>
+            </a>
+            <a href="#" class="sidebar-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sidebar-icon"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg>
+                <span>Logout</span>
+            </a>
+        </nav>
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <p>&copy; 2025 AgroSphere</p>
+        </div>
+    </aside>
+    <!-- =========== Header & Navigation =========== -->
+    <header id="navbar" class="fixed top-0 left-0 w-full z-40">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+             <a href="#" id="logo-btn" class="flex items-center space-x-2 text-white transition-transform hover:scale-105 z-50">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#16a34a"/>
+                    <path d="M12 6C9.17 6 6.84 7.63 5.5 10.04C6.87 8.5 8.83 7.5 11 7.5V10.5L14.5 7L11 3.5V6.5C10.5 6.5 10 6.5 9.5 6.5C8.81 6.5 8.16 6.62 7.55 6.81C8.83 5.67 10.41 5 12 5C13.59 5 15.17 5.67 16.45 6.81C17.16 6.62 17.81 6.5 18.5 6.5C19 6.5 19.5 6.5 20 6.5V3.5L16.5 7L20 10.5V7.5C18.17 7.5 16.13 8.5 14.5 10.04C13.16 7.63 10.83 6 12 6Z" fill="#22c55e"/>
+                </svg>
+                <span class="text-3xl font-bold">AgroSphere</span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Crops</a>
+                <a href="#about" class="nav-link">About Us</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="C:\Users\jaini\Desktop\javascript\login\login.html" class="btn btn-outline hidden sm:block">Login</a>
+                <a href="C:\Users\jaini\Desktop\javascript\login\register.html" class="btn btn-solid">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <!-- =========== Hero Section =========== -->
+        <section id="home" class="relative h-screen flex items-center justify-center text-white">
+            <div class="absolute inset-0 bg-black opacity-60 z-10"></div>
+            <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover z-0">
+                <source src="163560-828200792.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="relative z-20 text-center px-4 scroll-animate">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 leading-tight tracking-tight">
+                    <span class="text-green-600">Smart</span> Farming, 
+                    <span class="text-green-600">Sustainable</span> Future.
+                </h1>
+
+                
+
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-4 text-gray-200">
+                    Leveraging data and technology to empower farmers and revolutionize agriculture for a greener planet.
+                </p>
+
+
+                <h2 class="text-3xl md:text-54xl font-semibold mb-8 mt-8 leading-tight tracking-tight">
+                    <span class="text-green-700">Helping 5,000+ Farmers Grow Smarter</span> 
+                </h2>
+                <a href="#features" class="btn btn-primary mb-8">Explore Services</a>
+            </div>
+        </section>
+
+        <!-- =========== "Explore Our Crops" Section =========== -->
+        <section id="features" class="py-20 md:py-32 bg-light-bg">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 scroll-animate">
+                    <h2 class="text-4xl md:text-5xl font-bold text-extra">Explore Our Crops</h2>
+                    <p class="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">Get detailed insights into optimal growing conditions for a variety of crops.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 max-w-5xl mx-auto scroll-animate">
+                    <!-- Banana Card -->
+                    <div class="crop-card-container">
+                        <a href="C:\Users\jaini\Desktop\javascript\crop\banana_details.html" class="crop-card">
+                            <img src="pexels-liisbet-luup-121486327-33546096.jpg" alt="Banana" class="crop-card-img">
+                            <div class="crop-card-overlay">
+                                <div class="crop-card-content">
+                                    <h3 class="crop-card-title">Banana</h3>
+                                    <div class="crop-details">
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+                                            <span>25-30°C</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg>
+                                            <span>60-75%</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3-3-4-1.28 0-2.5 1-4 1s-2.72-1-4-1-3 2-3 4a7 7 0 0 0 7 7Z"></path><path d="M12 2v2"></path><path d="M4.2 4.2l1.4 1.4"></path><path d="M2 12h2"></path><path d="M18 12h2"></path><path d="m18.4 4.2-1.4 1.4"></path></svg>
+                                            <span>Rich Loamy</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+                                            <span>1800-2500 mm</span>
+                                        </div>
+                                    </div>
+                                    <div class="crop-card-action">
+                                        <span>Learn More</span>
+                                        <span>&rarr;</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Muskmelon Card -->
+                    <div class="crop-card-container">
+                        <a href="C:\Users\jaini\Desktop\javascript\crop\muskmelon_details.html" class="crop-card">
+                            <img src="organic-honeydew-harvest-nature-garden.jpg" alt="Muskmelon" class="crop-card-img">
+                            <div class="crop-card-overlay">
+                                <div class="crop-card-content">
+                                    <h3 class="crop-card-title">Muskmelon</h3>
+                                    <div class="crop-details">
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+                                            <span>25-35°C</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M12 18v-6"></path><path d="m9 15 3 3 3-3"></path></svg>
+                                            <span>Low (&lt;60%)</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3-3-4-1.28 0-2.5 1-4 1s-2.72-1-4-1-3 2-3 4a7 7 0 0 0 7 7Z"></path><path d="M12 2v2"></path><path d="M4.2 4.2l1.4 1.4"></path><path d="M2 12h2"></path><path d="M18 12h2"></path><path d="m18.4 4.2-1.4 1.4"></path></svg>
+                                            <span>Sandy Loam</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <svg class="detail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+                                            <span>400-600 mm</span>
+                                        </div>
+                                    </div>
+                                    <div class="crop-card-action">
+                                        <span>Learn More</span>
+                                        <span>&rarr;</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Placeholder for About and Contact sections if needed later -->
+        <div id="about">
+            <!-- =========== Enhanced About Us Section for Homepage =========== -->
+<!-- This section is designed to be longer, more visually engaging, and highly professional. -->
+<section id="about" class="bg-light-bg py-20 md:py-32 overflow-hidden">
+    <div class="container mx-auto px-6">
+
+        <!-- Part 1: Introduction -->
+        <div class="grid lg:grid-cols-2 gap-16 items-center mb-24">
+            <!-- Text Content -->
+            <div class="scroll-animate animate-slide-in-left">
+                <h2 class="text-base font-semibold uppercase tracking-wider text-primary-dark mb-3">About AgroSphere</h2>
+                <h3 class="text-4xl md:text-5xl font-extrabold text-extra mb-6 leading-tight">
+                    Fusing Agricultural Heritage with <span class="text-primary">Modern Innovation</span>
+                </h3>
+                <p class="text-lg text-gray-600 mb-8">
+                    AgroSphere was born from a simple yet powerful idea: to merge generations of farming wisdom with the transformative power of data. We are dedicated to providing farmers with accessible, actionable tools that increase crop yield, reduce waste, and promote sustainable practices for a healthier planet.
+                </p>
+                <a href="C:\Users\jaini\Desktop\javascript\about\about.html" class="btn btn-primary transform hover:scale-105">
+                    Discover Our Full Story
+                </a>
+            </div>
+
+            <!-- Image with decorative elements -->
+            <div class="relative hidden lg:block scroll-animate animate-slide-in-right" style="transition-delay: 150ms;">
+                <div class="absolute -top-8 -left-8 w-full h-full bg-green-200 rounded-lg transform rotate-[-6deg] z-0"></div>
+                <div class="absolute -bottom-8 -right-8 w-24 h-24 bg-primary opacity-20 rounded-full z-0"></div>
+                <img src="https://images.pexels.com/photos/4207892/pexels-photo-4207892.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="A farmer using modern technology in a lush field" class="relative rounded-lg shadow-2xl z-10">
+            </div>
+        </div>
+
+        <!-- Part 2: Our Core Values (REDESIGNED SECTION) -->
+        <div class="text-center mb-20">
+            <h3 class="text-4xl font-bold text-extra scroll-animate animate-slide-up">Our Core Values</h3>
+            <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto scroll-animate animate-slide-up" style="transition-delay: 150ms;">These principles guide every decision we make.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Value Card 1: Farmer-Centric -->
+            <div class="group relative bg-white p-8 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 scroll-animate animate-zoom-in" style="transition-delay: 150ms;">
+                <div class="mb-5 transition-transform duration-300 group-hover:scale-110">
+                    <div class="inline-block p-4 bg-green-100 rounded-full">
+                        <svg class="w-10 h-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                    </div>
+                </div>
+                <h4 class="text-2xl font-bold text-text-dark mb-3">Farmer-Centric</h4>
+                <p class="text-gray-600">Our tools are built for you, the farmer. We prioritize ease of use, affordability, and real-world impact.</p>
+                <div class="absolute top-6 right-6 text-gray-300 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L10 8.586l2.293-2.293z" clip-rule="evenodd" transform="rotate(-90 10 10)"/></svg>
+                </div>
+            </div>
+            
+            <!-- Value Card 2: Innovation -->
+            <div class="group relative bg-white p-8 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 scroll-animate animate-zoom-in" style="transition-delay: 300ms;">
+                <div class="mb-5 transition-transform duration-300 group-hover:scale-110">
+                    <div class="inline-block p-4 bg-green-100 rounded-full">
+                        <svg class="w-10 h-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    </div>
+                </div>
+                <h4 class="text-2xl font-bold text-text-dark mb-3">Driven by Innovation</h4>
+                <p class="text-gray-600">We constantly explore new AI and data science frontiers to bring you the most advanced and accurate insights.</p>
+                <div class="absolute top-6 right-6 text-gray-300 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L10 8.586l2.293-2.293z" clip-rule="evenodd" transform="rotate(-90 10 10)"/></svg>
+                </div>
+            </div>
+
+            <!-- Value Card 3: Sustainability -->
+            <div class="group relative bg-white p-8 rounded-lg border border-gray-200 shadow-sm transition-all duration-300 ease-in-out hover:border-primary hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 scroll-animate animate-zoom-in" style="transition-delay: 450ms;">
+                <div class="mb-5 transition-transform duration-300 group-hover:scale-110">
+                    <div class="inline-block p-4 bg-green-100 rounded-full">
+                        <svg class="w-10 h-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5V4H4zm0 12h5v-5H4v5zm12 0h5v-5h-5v5zm0-12h5V4h-5v5z" /></svg>
+                    </div>
+                </div>
+                <h4 class="text-2xl font-bold text-text-dark mb-3">Commitment to Sustainability</h4>
+                <p class="text-gray-600">We believe profitable farming and a healthy planet go hand-in-hand, promoting resource-efficient practices.</p>
+                 <div class="absolute top-6 right-6 text-gray-300 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L10 8.586l2.293-2.293z" clip-rule="evenodd" transform="rotate(-90 10 10)"/></svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+        
+        </div>
+        <div id="contact"></div>
+
+    </main>
+
+     <footer class="bg-dark-bg text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- About Section -->
+                <div>
+                    <a href="index.html" class="flex items-center space-x-2">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" fill="#16a34a"></path>
+                            <path d="M12 6C9.17 6 6.84 7.63 5.5 10.04C6.87 8.5 8.83 7.5 11 7.5V10.5L14.5 7L11 3.5V6.5C10.5 6.5 10 6.5 9.5 6.5C8.81 6.5 8.16 6.62 7.55 6.81C8.83 5.67 10.41 5 12 5C13.59 5 15.17 5.67 16.45 6.81C17.16 6.62 17.81 6.5 18.5 6.5C19 6.5 19.5 6.5 20 6.5V3.5L16.5 7L20 10.5V7.5C18.17 7.5 16.13 8.5 14.5 10.04C13.16 7.63 10.83 6 12 6Z" fill="#22c55e"></path>
+                        </svg>
+                        <span class="text-2xl font-bold">AgroSphere</span>
+                    </a>
+                    <p class="mt-4 text-gray-400">Pioneering the future of agriculture with data-driven insights and sustainable practices.</p>
+                </div>
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#home" class="hover:text-primary transition">Home</a></li>
+                        <li><a href="index.html#features" class="hover:text-primary transition">Crops</a></li>
+                        <li><a href="index.html#about" class="hover:text-primary transition">About Us</a></li>
+                        <li><a href="index.html#contact" class="hover:text-primary transition">Contact</a></li>
+                    </ul>
+                </div>
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start"><span class="mr-2 mt-1">📍</span> 123 AgriTech Avenue, Green Valley, State 12345</li>
+                        <li class="flex items-center"><span class="mr-2">📞</span> +1 (555) 123-4567</li>
+                        <li class="flex items-center"><span class="mr-2">✉️</span> info@agrosphere.com</li>
+                    </ul>
+                </div>
+                <!-- Social Media -->
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.602 0 0 .602 0 1.348v21.304C0 23.398.602 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h5.713c.722 0 1.325-.602 1.325-1.348V1.348C24 .602 23.398 0 22.675 0z"/></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.223.085c.645 1.956 2.52 3.379 4.734 3.419-1.71 1.332-3.86 2.125-6.204 2.125-.402 0-.799-.023-1.19-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.2-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-primary transition"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z"/></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-500">
+                <p>&copy; 2025 AgroSphere. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
